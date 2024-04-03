@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisor Dashboard - Task Management System</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            color: white;
+        }
+
+        nav {
+            background-color: #f90;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 5px 10px;
+            background-color: #f90;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .task {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #444;
+            border-radius: 5px;
+        }
+
+        .task p {
+            margin: 0;
+        }
+
+        .progress {
+            height: 20px;
+            background-color: #f90;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #f60;
+            border-radius: 5px;
+        }
+
+        footer {
+            background-color: #222;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="#">Logout</a>
+    </nav>
+    <div class="container">
+        <h1>Supervisor Dashboard</h1>
+        <div class="form-group">
+            <label for="task-name">Task Name</label>
+            <input type="text" id="task-name" placeholder="Enter task name" required>
+        </div>
+        <div class="form-group">
+            <label for="task-desc">Task Description</label>
+            <textarea id="task-desc" placeholder="Enter task description" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="intern-select">Assign To Intern</label>
+            <select id="intern-select" required>
+                <option value="intern 1">Etow Faith</option>
+                <option value="intern 2">Faith Mim</option>
+                <option value="intern 3">Mim faith</option>
+                <option value="intern 4">Nfor Riphat</option>
+                <option value="intern 5">Ngu Brandon</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="due-date">Due Date</label>
+            <input type="date" id="due-date">
+        </div>
+        <button id="assign-btn">Assign Task</button>
+        <div id="task-container"></div>
+    </div>
+    <footer>
+        &copy; 2024 Task Management System
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('tasks.json') // Modify this path to match the correct location of your tasks.json file
+            .then(response => response.json())
+            .then(data => {
+                const tasks = data.tasks;
+                const taskContainer = document.getElementById('task-container');
+
+                tasks.forEach(task => {
+                    const taskElement = document.createElement('div');
+                    taskElement.classList.add('task');
+                    taskElement.innerHTML = `
+                        <p>${task.name}</p>
+                        <p>Description: ${task.description}</p>
+                        <p>Assigned To: ${task.assignedTo}</p>
+                        <p>Due Date: ${task.dueDate}</p>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: ${task.progress}%;"></div>
+                        </div>
+                    `;
+                    taskContainer.appendChild(taskElement);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        document.getElementById('assign-btn').addEventListener('click', function() {
+            const taskName = document.getElementById('task-name').value;
+            const taskDesc = document.getElementById('task-desc').value;
+            const assignedTo = document.getElementById('intern-select').value;
+            const dueDate = document.getElementById('due-date').value;
+            const progress = 0; // Initial progress is 0%
+            
+            const newTask = {
+                name: taskName,
+                description: taskDesc,
+                assignedTo: assignedTo,
+                dueDate: dueDate,
+                progress: progress
+            };
+
+            // Retrieve existing tasks from local storage
+            let tasks = localStorage.getItem('tasks');
+            tasks = tasks ? JSON.parse(tasks) : [];
+
+            // Add new task to the tasks array
+            tasks.push(newTask);
+
+            // Store updated tasks array back to local storage
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+
+            // Reset form fields
+            document.getElementById('task-name').value = '';
+            document.getElementById('task-desc').value = '';
+            document.getElementById('intern-select').value = '';
+            document.getElementById('due-date').value = '';
+
+            // Display alert
+            alert('Task assigned successfully!');
+
+            // Optional: Reload the page to update the displayed tasks
+            // location.reload();
+            window.location.href = 'task.html';
+        });
+    </script>
+</body>
+
+</html>

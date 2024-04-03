@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisor Dashboard - Task Management System</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            color: white;
+        }
+
+        nav {
+            background-color: #f90;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #444;
+            color: white;
+        }
+
+        button {
+            padding: 5px 10px;
+            background-color: #f90;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        footer {
+            background-color: #222;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Logout</a>
+    </nav>
+    <div class="container">
+        <h1>Supervisor Dashboard</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Task Name</th>
+                    <th>Description</th>
+                    <th>Assigned To</th>
+                    <th>Due Date</th>
+                    <th>Progress</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="task-table-body"></tbody>
+        </table>
+    </div>
+    <footer>
+        &copy; 2024 Task Management System
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mapping object for assignees
+            const assigneeMap = {
+                intern1: 'Etow Faith',
+                intern2: 'Faith Mim',
+                intern3: 'Mim Faith',
+                intern4: 'Nfor Riphat',
+                intern5: 'Ngu Brandon'
+            };
+
+            // Retrieve tasks from local storage
+            let tasks = localStorage.getItem('tasks');
+            tasks = tasks ? JSON.parse(tasks) : [];
+
+            const taskTableBody = document.getElementById('task-table-body');
+
+            // Populate table with tasks
+            tasks.forEach((task, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${task.name}</td>
+                    <td>${task.description}</td>
+                    <td>${assigneeMap[task.assignedTo]}</td>
+                    <td>${task.dueDate}</td>
+                    <td>${task.progress}%</td>
+                    <td>
+                        <button onclick="editTask(${index})">Edit</button>
+                        <button onclick="deleteTask(${index})">Delete</button>
+                    </td>
+                `;
+                taskTableBody.appendChild(row);
+            });
+        });
+
+        function deleteTask(index) {
+            let tasks = localStorage.getItem('tasks');
+            tasks = tasks ? JSON.parse(tasks) : [];
+
+            tasks.splice(index, 1);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+
+            // Reload the page to reflect the changes
+            location.reload();
+        }
+         function editTask(index) {
+            let tasks = localStorage.getItem('tasks');
+            tasks = tasks ? JSON.parse(tasks) : [];
+
+         // You can implement your edit logic here
+            console.log('Editing task:', tasks[index]);
+         }
+    </script>
+</body>
+
+</html>
